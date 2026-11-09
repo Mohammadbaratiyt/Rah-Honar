@@ -53,7 +53,6 @@ class AppHome extends StatefulWidget {
 class _AppHomeState extends State<AppHome> {
   late final WebViewController controller;
   bool loading = true;
-  bool permissionAsked = false;
 
   @override
   void initState() {
@@ -66,16 +65,9 @@ class _AppHomeState extends State<AppHome> {
         NavigationDelegate(
           onPageFinished: (_) async {
             if (mounted) setState(() => loading = false);
-            if (!permissionAsked) {
-              permissionAsked = true;
-              final androidPlugin = notifications
-                  .resolvePlatformSpecificImplementation<
-                      AndroidFlutterLocalNotificationsPlugin>();
-              await androidPlugin?.requestNotificationsPermission();
-              await controller.runJavaScript(
-                "if (typeof syncNativeNotifications === 'function') syncNativeNotifications();",
-              );
-            }
+            await controller.runJavaScript(
+              "if (typeof syncNativeNotifications === 'function') syncNativeNotifications(); if (typeof refreshNotificationStatus === 'function') refreshNotificationStatus();",
+            );
           },
         ),
       )
@@ -94,6 +86,18 @@ class _AppHomeState extends State<AppHome> {
         await controller.runJavaScript(
           "window.dispatchEvent(new CustomEvent('nativeNotificationPermission',{detail:{granted:$granted}}));",
         );
+      } else if (data['type'] == 'checkNotificationPermission') {
+        final androidPlugin = notifications
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>();
+        final enabled = await androidPlugin?.areNotificationsEnabled();
+        final requested = data['requested'] == true;
+        final status = enabled == true
+            ? 'granted'
+            : (requested ? 'denied' : 'notRequested');
+        await controller.runJavaScript(
+          "window.dispatchEvent(new CustomEvent('nativeNotificationStatus',{detail:{status:'$status'}}));",
+        );
       } else if (data['type'] == 'scheduleTasks') {
         await _scheduleTasks(data);
       }
@@ -103,7 +107,8 @@ class _AppHomeState extends State<AppHome> {
   Future<void> _scheduleTasks(Map<String, dynamic> data) async {
     final settings =
         (data['settings'] as Map?)?.cast<String, dynamic>() ?? {};
-    if (settings['notify'] != true) {
+    final mode = (settings['notifyMode'] ?? 'both').toString();
+    if (mode == 'none') {
       await notifications.cancelAll();
       return;
     }
@@ -115,53 +120,86 @@ class _AppHomeState extends State<AppHome> {
         _minutes(settings['quietStart']?.toString() ?? '23:00');
     final quietEnd = _minutes(settings['quietEnd']?.toString() ?? '07:00');
 
-    for (final raw in tasks) {
-      if (raw is! Map) continue;
-      final t = raw.cast<String, dynamic>();
-      final kind = (t['kind'] ?? '').toString();
-
-      if (kind.contains('مرور') && settings['notifyReviews'] == false) {
-        continue;
-      }
-      if (kind.contains('آزمون') && settings['notifyTests'] == false) {
-        continue;
-      }
-      if (settings['notifyDaily'] == false &&
-          !kind.contains('مرور') &&
-          !kind.contains('آزمون')) {
-        continue;
-      }
-
-      final date = DateTime.tryParse('${t['date']}T${t['start']}:00');
-      if (date == null || !date.isAfter(now)) continue;
-
+    bool isQuiet(DateTime date) {
       final mins = date.hour * 60 + date.minute;
-      final quiet = quietStart <= quietEnd
+      return quietStart <= quietEnd
           ? (mins >= quietStart && mins < quietEnd)
           : (mins >= quietStart || mins < quietEnd);
-      if (quiet) continue;
-
-      final id = (t['id'].toString().hashCode & 0x7fffffff);
-      await notifications.zonedSchedule(
-        id,
-        'وقت مطالعه است ✦',
-        '${t['title'] ?? ''} · ${t['topic'] ?? ''}',
-        tz.TZDateTime.from(date, tz.local),
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'study_reminders',
-            'یادآوری‌های مطالعه',
-            channelDescription: 'یادآوری جلسات برنامه راه هنر',
-            importance: Importance.high,
-            priority: Priority.high,
-          ),
-        ),
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        payload: t['id'].toString(),
-      );
     }
+
+    for (final raw in tasks) {
+      if (raw is! Map) continue;
+      final task = raw.cast<String, dynamic>();
+      final dateText = (task['date'] ?? '').toString();
+      final startText = (task['start'] ?? '').toString();
+      final endText = (task['end'] ?? '').toString();
+      final title = (task['title'] ?? 'مطالعه').toString();
+      final topic = (task['topic'] ?? '').toString();
+      final baseId = _stableId('${task['id'] ?? '$dateText-$startText'}');
+
+      final startDate = DateTime.tryParse('${dateText}T$startText:00');
+      final endDate = DateTime.tryParse('${dateText}T$endText:00');
+      if (startDate == null || endDate == null || !endDate.isAfter(startDate)) {
+        continue;
+      }
+
+      if ((mode == 'both' || mode == 'start') &&
+          startDate.isAfter(now) &&
+          !isQuiet(startDate)) {
+        await notifications.zonedSchedule(
+          baseId,
+          'شروع مطالعه ✦',
+          '$title${topic.isNotEmpty ? ' · $topic' : ''}',
+          tz.TZDateTime.from(startDate, tz.local),
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'study_reminders_start',
+              'شروع فعالیت‌های مطالعاتی',
+              channelDescription: 'یادآوری زمان شروع هر فعالیت',
+              importance: Importance.high,
+              priority: Priority.high,
+            ),
+          ),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          payload: '${task['id']}:start',
+        );
+      }
+
+      if ((mode == 'both' || mode == 'end') &&
+          endDate.isAfter(now) &&
+          !isQuiet(endDate)) {
+        await notifications.zonedSchedule(
+          (baseId ^ 0x40000000) & 0x7fffffff,
+          'پایان فعالیت ✦',
+          'زمان ${title} به پایان رسید. برای استراحت کوتاه یا فعالیت بعدی آماده شو.',
+          tz.TZDateTime.from(endDate, tz.local),
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'study_reminders_end',
+              'پایان فعالیت‌های مطالعاتی',
+              channelDescription: 'یادآوری زمان پایان هر فعالیت',
+              importance: Importance.defaultImportance,
+              priority: Priority.defaultPriority,
+            ),
+          ),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          payload: '${task['id']}:end',
+        );
+      }
+    }
+  }
+
+  int _stableId(String value) {
+    var hash = 0x811c9dc5;
+    for (final unit in value.codeUnits) {
+      hash ^= unit;
+      hash = (hash * 0x01000193) & 0x7fffffff;
+    }
+    return hash & 0x3fffffff;
   }
 
   int _minutes(String value) {
