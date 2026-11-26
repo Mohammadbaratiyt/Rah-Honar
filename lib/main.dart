@@ -104,7 +104,33 @@ class _AppHomeState extends State<AppHome> {
     } catch (_) {}
   }
 
+  bool _scheduling = false;
+  Map<String, dynamic>? _pendingSchedule;
+
+  // Only one scheduling pass runs at a time; if new data arrives meanwhile,
+  // only the latest payload is processed afterwards (avoids piled-up
+  // cancelAll + hundreds of zonedSchedule calls on slow devices).
   Future<void> _scheduleTasks(Map<String, dynamic> data) async {
+    if (_scheduling) {
+      _pendingSchedule = data;
+      return;
+    }
+    _scheduling = true;
+    try {
+      var next = data;
+      while (true) {
+        _pendingSchedule = null;
+        await _doScheduleTasks(next);
+        final queued = _pendingSchedule;
+        if (queued == null) break;
+        next = queued;
+      }
+    } finally {
+      _scheduling = false;
+    }
+  }
+
+  Future<void> _doScheduleTasks(Map<String, dynamic> data) async {
     final settings =
         (data['settings'] as Map?)?.cast<String, dynamic>() ?? {};
     final mode = (settings['notifyMode'] ?? 'both').toString();

@@ -42,9 +42,9 @@ button{cursor:pointer}
 
 /* ───────── Ambient background ───────── */
 .bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(900px 500px at 100% -10%,var(--bg2),transparent 60%),var(--bg)}
-.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.33;animation:float 18s ease-in-out infinite}
-.blob.a{width:340px;height:340px;background:var(--accent-2);top:-80px;left:-90px}
-.blob.b{width:380px;height:380px;background:var(--accent);bottom:-120px;right:-120px;animation-delay:-7s;opacity:.26}
+.blob{position:absolute;border-radius:50%;opacity:.33;animation:float 18s ease-in-out infinite;will-change:transform}
+.blob.a{width:664px;height:664px;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent-2) 95%,transparent) 0px,color-mix(in srgb,var(--accent-2) 96%,transparent) 51px,color-mix(in srgb,var(--accent-2) 89%,transparent) 85px,color-mix(in srgb,var(--accent-2) 80%,transparent) 110px,color-mix(in srgb,var(--accent-2) 69%,transparent) 136px,color-mix(in srgb,var(--accent-2) 55%,transparent) 162px,color-mix(in srgb,var(--accent-2) 40%,transparent) 187px,color-mix(in srgb,var(--accent-2) 27%,transparent) 212px,color-mix(in srgb,var(--accent-2) 14%,transparent) 246px,color-mix(in srgb,var(--accent-2) 4%,transparent) 289px,color-mix(in srgb,var(--accent-2) 0%,transparent) 332px);top:-242px;left:-252px}
+.blob.b{width:740px;height:740px;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 97%,transparent) 0px,color-mix(in srgb,var(--accent) 97%,transparent) 57px,color-mix(in srgb,var(--accent) 91%,transparent) 95px,color-mix(in srgb,var(--accent) 83%,transparent) 124px,color-mix(in srgb,var(--accent) 71%,transparent) 152px,color-mix(in srgb,var(--accent) 55%,transparent) 180px,color-mix(in srgb,var(--accent) 39%,transparent) 209px,color-mix(in srgb,var(--accent) 25%,transparent) 238px,color-mix(in srgb,var(--accent) 11%,transparent) 276px,color-mix(in srgb,var(--accent) 3%,transparent) 323px,color-mix(in srgb,var(--accent) 0%,transparent) 370px);bottom:-300px;right:-300px;animation-delay:-7s;opacity:.26}
 [data-theme="light"] .blob{opacity:.22}
 @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,30px) scale(1.12)}}
 
@@ -84,7 +84,7 @@ header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;just
 
 /* ───────── Cards & text ───────── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:16px;box-shadow:var(--shadow);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative}
+  position:relative}
 .card h2{margin:0;font-size:20px;font-weight:900;color:var(--accent);line-height:1.6}
 .card h3{margin:0;font-size:16px;font-weight:700}
 .sub{font-size:13px;color:var(--muted);margin:4px 0 14px;line-height:1.9}
@@ -299,7 +299,7 @@ select option{background:var(--surface-solid);color:var(--text)}
 .tab svg{transition:transform .4s var(--ease)}
 .tab.on{color:var(--accent-ink);font-weight:700}.tab.on svg{transform:translateY(-1px) scale(1.1)}
 .tab-ind{position:absolute;top:6px;bottom:6px;right:6px;width:calc((100% - 12px)/5);border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  transform:translateX(calc(var(--i,0)*-100%));transition:transform .5s var(--ease);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 40%,transparent)}
+  transform:translateX(calc(var(--i,0)*-100%));transition:transform .5s var(--ease);will-change:transform;box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 40%,transparent)}
 .badge{position:absolute;top:3px;right:calc(50% - 20px);min-width:17px;height:17px;border-radius:99px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;
   display:none;place-items:center;padding:0 4px;line-height:1}.badge.show{display:grid;animation:pop .5s var(--ease)}
 
@@ -345,6 +345,27 @@ select option{background:var(--surface-solid);color:var(--text)}
 @keyframes conf{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
 .footer{text-align:center;color:var(--muted);font-size:11.5px;margin:22px 0 0}
 .pulse{animation:pulse .8s var(--ease)}@keyframes pulse{40%{transform:scale(1.12)}}
+
+/* ───────── Performance switches (settings) ───────── */
+.fx-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--border)}
+.fx-row:first-of-type{border-top:0}
+.fx-txt{min-width:0}.fx-txt b{display:block;font-size:14.5px;line-height:1.6}.fx-txt small{display:block;font-size:12px;color:var(--muted);line-height:1.8}
+.tgl{width:54px;height:31px;border-radius:99px;border:1px solid var(--border);background:var(--field);position:relative;padding:0;flex:none;transition:background .3s,border-color .3s}
+.tgl i{position:absolute;top:3px;right:3px;width:23px;height:23px;border-radius:50%;background:var(--muted);transition:transform .35s var(--ease),background .3s}
+.tgl[aria-checked="true"]{background:color-mix(in srgb,var(--accent) 22%,transparent);border-color:var(--accent)}
+.tgl[aria-checked="true"] i{background:linear-gradient(135deg,var(--accent),var(--accent-2));transform:translateX(-23px)}
+
+/* ───────── Lite modes (toggled from settings) ───────── */
+/* animations off: every animation/transition jumps straight to its end state, so nothing is left hidden */
+html.no-anim *,html.no-anim *:before,html.no-anim *:after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}
+/* blur off: glass surfaces become near-opaque, heavy shadows get lighter */
+html.no-blur header.top,html.no-blur .tabbar,html.no-blur .scrim,html.no-blur .layer .lbg{backdrop-filter:none;-webkit-backdrop-filter:none}
+html.no-blur header.top{background:color-mix(in srgb,var(--bg) 92%,transparent)}
+html.no-blur .tabbar{background:color-mix(in srgb,var(--surface-solid) 97%,transparent)}
+html.no-blur .scrim,html.no-blur .layer .lbg{background:rgba(0,0,5,.68)}
+html.no-blur .card,html.no-blur .acc,html.no-blur .toast{box-shadow:0 3px 12px rgba(0,0,0,.25)}
+html.no-blur .tab-ind{box-shadow:none}
+html.no-blur .drawer{box-shadow:-6px 0 18px rgba(0,0,0,.35)}
 
 @media (max-width:380px){.day{font-size:30px}.school{min-width:150px}.strip{gap:4px}.formgrid{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
@@ -531,7 +552,10 @@ select option{background:var(--surface-solid);color:var(--text)}
   <div class="page-head"><div><h1>تنظیمات و پشتیبان‌گیری</h1><p>همه‌چیز روی همین دستگاه ذخیره می‌شود.</p></div></div>
   <div class="card"><h2>ظاهر</h2>
     <div class="field"><span class="lbl">تم برنامه</span><div class="seg" id="themeSeg" data-v="dark"><span class="pill-bg"></span><button data-v="dark">تیره</button><button data-v="light">روشن</button></div></div>
-    <div class="field"><span class="lbl">رنگ تأکیدی</span><div class="swatches" id="swatchesMain"></div></div></div>
+    <div class="field"><span class="lbl">رنگ تأکیدی</span><div class="swatches" id="swatchesMain"></div></div>
+    <hr style="border:0;border-top:1px solid var(--border);margin:14px 0 4px">
+    <div class="fx-row"><div class="fx-txt"><b>انیمیشن‌ها</b><small>خاموش‌کردن، حرکت‌ها و انتقال‌ها را حذف می‌کند و روی گوشی‌های ضعیف روان‌تر است.</small></div><button class="tgl" role="switch" aria-checked="true" data-fx="animations" aria-label="انیمیشن‌ها"><i></i></button></div>
+    <div class="fx-row"><div class="fx-txt"><b>حالت‌های بلر (شیشه‌ای)</b><small>خاموش‌کردن، محوشدگی پشت منو و نوار پایین را برمی‌دارد و سایه‌های سنگین را سبک می‌کند.</small></div><button class="tgl" role="switch" aria-checked="true" data-fx="blur" aria-label="حالت‌های بلر"><i></i></button></div></div>
   <div class="card"><h2>تنظیم برنامه</h2>
     <div class="field"><label for="startDate">تاریخ شروع</label><input id="startDate" type="date"><span class="hint" id="startHint"></span></div>
     <div class="field"><label for="targetDate">تاریخ هدف پایان منابع</label><input id="targetDate" type="date"><span class="hint" id="targetHint"></span></div>
@@ -589,6 +613,8 @@ select option{background:var(--surface-solid);color:var(--text)}
   <div class="sheet"><div class="grab"></div><div class="shead"><h3>تنظیمات سریع</h3><button class="icon-btn" data-close="sheet" aria-label="بستن"><svg class="i"><use href="#i-x"/></svg></button></div>
     <div class="field"><span class="lbl">رنگ اصلی برنامه</span><div class="swatches" id="swatchesSheet"></div></div>
     <div class="field"><span class="lbl">تم</span><div class="seg" id="themeSegSheet" data-v="dark"><span class="pill-bg"></span><button data-v="dark">تیره</button><button data-v="light">روشن</button></div></div>
+    <div class="fx-row"><div class="fx-txt"><b>انیمیشن‌ها</b><small>خاموش‌کردن، حرکت‌ها و انتقال‌ها را حذف می‌کند و روی گوشی‌های ضعیف روان‌تر است.</small></div><button class="tgl" role="switch" aria-checked="true" data-fx="animations" aria-label="انیمیشن‌ها"><i></i></button></div>
+    <div class="fx-row"><div class="fx-txt"><b>حالت‌های بلر (شیشه‌ای)</b><small>خاموش‌کردن، محوشدگی پشت منو و نوار پایین را برمی‌دارد و سایه‌های سنگین را سبک می‌کند.</small></div><button class="tgl" role="switch" aria-checked="true" data-fx="blur" aria-label="حالت‌های بلر"><i></i></button></div>
     <button class="btn block" id="allSettings" style="margin-top:14px">همه تنظیمات و اعلان‌ها</button></div></div>
 
 <!-- generic modal -->
@@ -608,7 +634,8 @@ select option{background:var(--surface-solid);color:var(--text)}
    راه هنر · UI v2 · منطق برنامه با ساختار داده‌ی قبلی سازگار است
    ════════════════════════════════════════════════════════════ */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const fa=n=>new Intl.NumberFormat('fa-IR').format(n);
+const _nf=new Intl.NumberFormat('fa-IR'),fa=n=>_nf.format(n);
+const cmp=(a,b)=>a<b?-1:a>b?1:0;
 const faDigits=s=>String(s??'').replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
 const pad=n=>String(n).padStart(2,'0');
 const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
@@ -620,12 +647,19 @@ const KEY='rah_honar_v2';
 const DAYS=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
 const DAY_SHORT=['ی','د','س','چ','پ','ج','ش'];
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LOWEND=(()=>{try{return (navigator.deviceMemory&&navigator.deviceMemory<=3)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)}catch(e){return false}})();
+const animOn=()=>!REDUCED&&S?.settings?.animations!==false;
 const ico=(n,c='')=>`<svg class="i ${c}"><use href="#i-${n}"/></svg>`;
 
 /* ── Dates (Jalali display) ── */
 const _f={};
-function jf(opts){const k=JSON.stringify(opts);try{return _f[k]??=new Intl.DateTimeFormat('fa-IR-u-ca-persian',opts)}catch(e){return null}}
-function fmtJ(s,opts,fallback){const d=new Date(s+'T12:00:00');const f=jf(opts);try{return f?f.format(d):fallback}catch(e){return fallback}}
+function jf(opts){const k=Object.keys(opts).join();try{return _f[k]??=new Intl.DateTimeFormat('fa-IR-u-ca-persian',opts)}catch(e){return null}}
+const _fc=new Map();
+function fmtJ(s,opts,fallback){const k=s+'|'+Object.keys(opts).join(),c=_fc.get(k);if(c!==undefined)return c;
+  const d=new Date(s+'T12:00:00');const f=jf(opts);let r;try{r=f?f.format(d):fallback}catch(e){r=fallback}
+  if(_fc.size>4000)_fc.clear();_fc.set(k,r);return r}
+const _dtf=(()=>{try{return new Intl.DateTimeFormat('fa-IR',{year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric'})}catch(e){return null}})();
+const fmtStamp=v=>{const d=new Date(v);try{return _dtf?_dtf.format(d):d.toLocaleString('fa-IR')}catch(e){return d.toLocaleString('fa-IR')}};
 const jdate=s=>s?fmtJ(s,{day:'numeric',month:'long',year:'numeric'},s):'';
 const jday=s=>fmtJ(s,{day:'numeric'},s.slice(8));
 const jmonth=s=>fmtJ(s,{month:'long'},'');
@@ -641,7 +675,7 @@ const slots=[{day:6,start:'19:30',end:'20:15',area:'درک عمومی هنر',bo
 /* ── State ── */
 let books=[],S=null,currentPage='home',nativeStatus=null;
 const fresh=()=>({version:2,done:{},tasks:[],reviews:[],sessions:[],tests:[],testBank:[],testMeta:null,schoolChoices:{},dayPlanMeta:{},selfcheck:{},
-  settings:{start:today(),target:'',exam:'',pagesPerHour:19,accent:'#3e9cff',notifyMode:'both',notificationsPermissionRequested:false,quietStart:'23:00',quietEnd:'07:00',versions:[]},theme:'dark',work:{}});
+  settings:{animations:true,blur:!LOWEND,start:today(),target:'',exam:'',pagesPerHour:19,accent:'#3e9cff',notifyMode:'both',notificationsPermissionRequested:false,quietStart:'23:00',quietEnd:'07:00',versions:[]},theme:'dark',work:{}});
 function normalize(o){
   const f=fresh(),s=Object.assign({},f,o||{});
   ['done','schoolChoices','dayPlanMeta','selfcheck','work'].forEach(k=>{if(!s[k]||typeof s[k]!=='object'||Array.isArray(s[k]))s[k]={}});
@@ -650,11 +684,17 @@ function normalize(o){
   s.settings.notifyMode=s.settings.notifyMode||(s.settings.notify===false?'none':'both');
   s.settings.quietStart=s.settings.quietStart||'23:00';s.settings.quietEnd=s.settings.quietEnd||'07:00';
   s.settings.notificationsPermissionRequested=!!s.settings.notificationsPermissionRequested;
+  if(typeof s.settings.animations!=='boolean')s.settings.animations=true;
+  if(typeof s.settings.blur!=='boolean')s.settings.blur=!LOWEND;
   if(!Array.isArray(s.settings.versions))s.settings.versions=[];
   if(s.theme!=='light')s.theme='dark';
   return s;
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}try{syncNativeNotifications()}catch(e){}}
+let _saveT=0,_dirty=false;
+function flushSave(){clearTimeout(_saveT);_saveT=0;if(!_dirty||!S)return;_dirty=false;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(now){_dirty=true;clearTimeout(_saveT);if(now===true)flushSave();else _saveT=setTimeout(flushSave,350);scheduleNativeSync()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
+window.addEventListener('pagehide',flushSave);
 
 /* ── Accent palettes (key = stored hex, compatible with older versions) ── */
 const ACCENTS={
@@ -665,8 +705,18 @@ const ACCENTS={
  '#ff7ab8':{n:'صورتی',d:['#ff7ab8','#ff9a6b'],l:['#c4337a','#c4552a']},
  '#ffc14d':{n:'کهربایی',d:['#ffc14d','#ff7a59'],l:['#a3560b','#b83a1e']}
 };
+function applyFx(){
+  const st=S.settings,root=document.documentElement;
+  root.classList.toggle('no-anim',st.animations===false);root.classList.toggle('no-blur',st.blur===false);
+  $$('[data-fx]').forEach(b=>b.setAttribute('aria-checked',st[b.dataset.fx]!==false))
+}
+function setFx(k){
+  if(k!=='animations'&&k!=='blur')return;
+  S.settings[k]=S.settings[k]===false;applyFx();save();
+  toast(k==='animations'?(S.settings[k]?'انیمیشن‌ها روشن شد ✓':'انیمیشن‌ها خاموش شد'):(S.settings[k]?'حالت‌های بلر روشن شد ✓':'حالت‌های بلر خاموش شد'));
+}
 function applyTheme(){
-  const t=S.theme,root=document.documentElement;root.dataset.theme=t;
+  const t=S.theme,root=document.documentElement;root.dataset.theme=t;applyFx();
   const a=ACCENTS[S.settings.accent]||ACCENTS['#3e9cff'],c=t==='light'?a.l:a.d;
   root.style.setProperty('--accent',c[0]);root.style.setProperty('--accent-2',c[1]);
   const st=$$('#g stop');st[0]?.setAttribute('stop-color',c[0]);st[1]?.setAttribute('stop-color',c[1]);
@@ -719,7 +769,7 @@ function buildPlan(force=true){
   S.planMeta={start,end,slots:planSlots.length,studyMinutes:slotsStudy,totalPages:allPages,requiredRate:needed,capacityPages:capacity};
   save();
 }
-function allTasks(){return S.tasks.slice().sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start))}
+function allTasks(){return S.tasks.slice().sort((a,b)=>cmp(a.date+a.start,b.date+b.start))}
 
 /* ── School choice & per-day task selection ── */
 function getSchoolChoice(){const d=today(),v=S.schoolChoices?.[d];if(v==='yes'||v==='no')return v;
@@ -734,7 +784,7 @@ const todayTasksForSchedule=()=>tasksForDate(today());
 function setSchoolChoice(v){S.schoolChoices[today()]=v;if(v==='no')ensureOffdayTasks();save();renderHome()}
 function ensureOffdayTasks(){
   const d=today();if(S.tasks.some(t=>t.date===d&&t.scheduleType==='offday'))return;
-  const tpl=S.tasks.filter(t=>t.generated&&new Date(t.date+'T12:00:00').getDay()===5).sort((a,b)=>a.start.localeCompare(b.start));
+  const tpl=S.tasks.filter(t=>t.generated&&new Date(t.date+'T12:00:00').getDay()===5).sort((a,b)=>cmp(a.start,b.start));
   const used=new Set();
   tpl.forEach(t=>{let start=t.start,end=t.end;if(start==='09:00'){start='09:30';end='10:45'}if(start<'09:30')return;if(used.has(start))return;used.add(start);
     S.tasks.push({...t,id:'off_'+d+'_'+start.replace(':',''),date:d,start,end,done:false,generated:false,scheduleType:'offday',aiChanged:false})});
@@ -763,15 +813,15 @@ function toast(msg,action){const t=$('#toast');t.innerHTML=`<span>${esc(msg)}</s
   if(action)$('#toastAct').onclick=()=>{action.fn();t.classList.remove('show')};
   t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),action?4200:2400)}
 function celebrate(msg){
-  if(msg)toast(msg);if(REDUCED)return;
+  if(msg)toast(msg);if(!animOn())return;
   const box=$('#confetti'),cols=['var(--accent)','var(--accent-2)','#3fe0a5','#ffc14d','#ff7ab8'];
-  for(let i=0;i<34;i++){const e=document.createElement('i');
+  for(let i=0,n=LOWEND?16:34;i<n;i++){const e=document.createElement('i');
     e.style.cssText=`--x:${30+Math.random()*40}vw;--y:${35+Math.random()*10}vh;--dx:${(Math.random()-.5)*340}px;--dy:${-120+Math.random()*420}px;--r:${Math.random()*720-360}deg;background:${cols[i%5]};animation-delay:${Math.random()*.15}s`;
     box.appendChild(e);setTimeout(()=>e.remove(),1500)}
 }
 function animateNum(el,to,fmt=fa){
   if(!el)return;const from=+el.dataset.v||0;el.dataset.v=to;
-  if(REDUCED||from===to){el.textContent=fmt(to);return}
+  if(!animOn()||from===to){el.textContent=fmt(to);return}
   const t0=performance.now(),D=650;(function step(t){const p=Math.min(1,(t-t0)/D),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(from+(to-from)*e));if(p<1)requestAnimationFrame(step)})(t0);
 }
 function setRing(ring,p){const b=ring.querySelector('.bar');if(b)b.style.strokeDashoffset=163.4*(1-p/100);const s=ring.querySelector('span');if(s&&!s.id)s.textContent=fa(Math.round(p))+'٪'}
@@ -813,12 +863,13 @@ async function copyText(t,label){
 const PAGES=['home','week','roadmap','planner','books','quiz','reviews','reports','settings'],TABS=['home','week','books','reviews','quiz'];
 function showPage(p){
   if(!PAGES.includes(p))p='home';currentPage=p;
+  render();
   $$('.page').forEach(x=>x.classList.toggle('active',x.id===p));
   const pg=$('#'+p);pg.classList.add('fresh');setTimeout(()=>pg.classList.remove('fresh'),1000);
   $$('.tab').forEach(t=>{const on=t.dataset.page===p;t.classList.toggle('on',on);on?t.setAttribute('aria-current','page'):t.removeAttribute('aria-current')});
   const ti=TABS.indexOf(p);$('#tabInd').style.opacity=ti<0?0:1;if(ti>=0)$('#tabInd').style.setProperty('--i',ti);
   $$('.drawer a').forEach(a=>a.classList.toggle('active',a.dataset.page===p));
-  render();window.scrollTo({top:0,behavior:REDUCED?'auto':'smooth'});
+  window.scrollTo({top:0,behavior:animOn()?'smooth':'auto'});
 }
 function go(p,push=true){
   if(!PAGES.includes(p))p='home';
@@ -834,7 +885,7 @@ window.addEventListener('popstate',e=>{
 
 /* ── Rendering ── */
 function render(){
-  renderHome();
+  if(currentPage==='home')renderHome();
   if(currentPage==='week')renderWeek();
   if(currentPage==='roadmap')renderRoadmap();
   if(currentPage==='books')renderBooks();
@@ -905,7 +956,7 @@ function renderWeek(){
 }
 
 /* Roadmap */
-const openWeeks=new Set();let roadInit=false;
+const openWeeks=new Set();let roadInit=false;const LAZY={};
 function renderRoadmap(){
   const start=S.settings.start||today(),tasks=allTasks().filter(t=>t.generated||t.manualEdit),groups={};
   tasks.forEach(t=>{let w=Number.isInteger(+t.week)&&+t.week>0?+t.week:Math.floor(diffDays(start,t.date)/7)+1;w=Math.max(1,Math.min(18,w));(groups[w]??=[]).push(t)});
@@ -916,11 +967,11 @@ function renderRoadmap(){
   $('#roadmapContent').innerHTML=Array.from({length:18},(_,i)=>{
     const w=i+1,arr=groups[w]||[],d0=addDays(start,i*7),d6=addDays(d0,6),wd=arr.filter(t=>t.done).length,wp=arr.length?Math.round(wd/arr.length*100):0,goal=goals.find(g=>+g.week===w);
     const byDay={};arr.forEach(t=>(byDay[t.date]??=[]).push(t));
-    const body=(goal?`<div class="goal"><b>هدف هفته:</b> ${esc(goal.goal||'')}${(goal.resources||[]).length?`<div class="chips">${goal.resources.map(r=>`<span class="chip">${esc(r)}</span>`).join('')}</div>`:''}</div>`:'')+
+    const body=()=>(goal?`<div class="goal"><b>هدف هفته:</b> ${esc(goal.goal||'')}${(goal.resources||[]).length?`<div class="chips">${goal.resources.map(r=>`<span class="chip">${esc(r)}</span>`).join('')}</div>`:''}</div>`:'')+
       (arr.length?Object.keys(byDay).sort().map(d=>`<div class="daylab">${DAYS[new Date(d+'T12:00:00').getDay()]} · ${jshort(d)}</div>`+byDay[d].map(t=>`<div class="line ${t.done?'done':''}"><div class="info"><div class="t">${esc(t.title)}</div><div class="m">${taskMeta(t)}</div></div><button class="mini" data-edit-task="${esc(t.id)}" aria-label="ویرایش">${ico('edit')}</button></div>`).join('')).join(''):emptyBlock('inbox','برای این هفته فعالیتی ثبت نشده است.'));
     return `<div class="acc ${openWeeks.has(w)?'open':''} ${w===curW?'cur':''}" data-acc="w${w}"><button class="acc-head" data-acc-toggle="${w}" aria-expanded="${openWeeks.has(w)}"><div class="ttl"><b>هفته ${fa(w)} ${w===curW?'<span class="pill" style="margin-inline-start:6px">این هفته</span>':''}</b><small>${jshort(d0)} تا ${jshort(d6)} · ${fa(wd)}/${fa(arr.length)} جلسه</small></div>
       <div class="ring mini"><svg viewBox="0 0 60 60"><circle class="track" cx="30" cy="30" r="26"/><circle class="bar" cx="30" cy="30" r="26" style="stroke-dashoffset:${163.4*(1-wp/100)}"/></svg><span>${fa(wp)}٪</span></div>${ico('down2','chev')}</button>
-      <div class="acc-body"><div><div class="acc-in">${body}</div></div></div></div>`}).join('');
+      <div class="acc-body"><div><div class="acc-in"${openWeeks.has(w)?'':` data-lazy="w${w}"`}>${openWeeks.has(w)?body():(LAZY['w'+w]=body,'')}</div></div></div></div>`}).join('');
 }
 
 /* Books */
@@ -931,19 +982,19 @@ function renderBooks(){
   $('#bookGroups').innerHTML=[1,2,3].map(p=>{const bs=books.filter(b=>b.priority===p);if(!bs.length)return '';
     return `<div class="gtitle"><h2>اولویت ${fa(p)}</h2><span class="pill">${fa(bs.length)} منبع</span></div>`+bs.map(b=>{
       const d=(b.chapters||[]).filter((c,i)=>chapterDone(b.id+'_'+i)).length,n=(b.chapters||[]).length,pp=n?Math.round(d/n*100):0,open=openBooks.has(b.id);
-      const body=b.missing?`<div class="notice warning" style="margin-top:0">${esc(b.reason)}</div>`:b.chapters.map((c,i)=>{const k=b.id+'_'+i,sc=S.selfcheck[k],lv=sc?{good:['مسلط','good'],mid:['نیاز به مرور','warn'],weak:['ضعیف','bad']}[sc.level]:null;
+      const body=()=>b.missing?`<div class="notice warning" style="margin-top:0">${esc(b.reason)}</div>`:b.chapters.map((c,i)=>{const k=b.id+'_'+i,sc=S.selfcheck[k],lv=sc?{good:['مسلط','good'],mid:['نیاز به مرور','warn'],weak:['ضعیف','bad']}[sc.level]:null;
         return `<div class="chapter ${chapterDone(k)?'done':''}"><button class="chk" role="checkbox" aria-checked="${chapterDone(k)}" aria-label="تکمیل فصل ${esc(c[0])}" data-ch="${k}"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <div class="info"><div class="ct">${esc(c[0])}${lv?`<span class="lvl ${lv[1]}">${lv[0]}</span>`:''}</div><div class="cm">${c[1]?`شروع از صفحه ${fa(c[1])}`:'شماره صفحه در فهرست مشخص نیست'}</div></div>
         <button class="btn sm soft" data-selfcheck="${k}">خودسنجی</button></div>`}).join('');
       return `<div class="acc ${open?'open':''}" data-acc="b${b.id}"><button class="acc-head" data-acc-toggle="${esc(b.id)}" data-kind="book" aria-expanded="${open}"><div class="ttl"><b>${esc(b.name)}</b><small>${esc(b.area)} · ${b.pages?fa(b.pages)+' صفحه':'PDF موجود نیست'}</small></div>
         ${b.missing?'<span class="pill warn">نیازمند PDF</span>':`<div class="ring mini"><svg viewBox="0 0 60 60"><circle class="track" cx="30" cy="30" r="26"/><circle class="bar" cx="30" cy="30" r="26" style="stroke-dashoffset:${163.4*(1-pp/100)}"/></svg><span>${fa(d)}/${fa(n)}</span></div>`}${ico('down2','chev')}</button>
-        <div class="acc-body"><div><div class="acc-in">${body}</div></div></div></div>`}).join('')}).join('');
+        <div class="acc-body"><div><div class="acc-in"${open?'':` data-lazy="b${esc(b.id)}"`}>${open?body():(LAZY['b'+b.id]=body,'')}</div></div></div></div>`}).join('')}).join('');
 }
 
 /* Reviews */
 let revTab=null;
 function renderReviews(){
-  const t=today(),late=lateReviews(),now=S.reviews.filter(r=>!r.done&&r.due===t),fut=S.reviews.filter(r=>!r.done&&r.due>t).sort((a,b)=>a.due.localeCompare(b.due));
+  const t=today(),late=lateReviews(),now=S.reviews.filter(r=>!r.done&&r.due===t),fut=S.reviews.filter(r=>!r.done&&r.due>t).sort((a,b)=>cmp(a.due,b.due));
   if(!revTab)revTab=late.length?'late':'today';
   $('#revTabs').innerHTML=[['late','عقب‌افتاده',late.length],['today','امروز',now.length],['future','آینده',fut.length]].map(([k,l,n])=>`<button role="tab" class="${revTab===k?'on':''}" data-rev-tab="${k}" aria-selected="${revTab===k}">${l}<em>(${fa(n)})</em></button>`).join('');
   const list={late,today:now,future:fut}[revTab];
@@ -977,7 +1028,7 @@ function renderSettings(){
   dateHint('#startDate','#startHint');dateHint('#targetDate','#targetHint');dateHint('#examDate','#examHint');renderVersionHistory();refreshNotificationStatus();
 }
 function renderVersionHistory(){
-  const v=S.settings.versions||[];$('#versionHistory').innerHTML=v.length?v.map(x=>`<div class="line"><div class="info"><div class="t">${esc(x.label)}</div><div class="m">${faDigits(new Date(x.createdAt).toLocaleString('fa-IR'))}</div></div><button class="btn sm soft" data-restore-version="${x.id}">بازگردانی</button></div>`).join(''):emptyBlock('inbox','هنوز نسخه قبلی ثبت نشده است.');
+  const v=S.settings.versions||[];$('#versionHistory').innerHTML=v.length?v.map(x=>`<div class="line"><div class="info"><div class="t">${esc(x.label)}</div><div class="m">${faDigits(fmtStamp(x.createdAt))}</div></div><button class="btn sm soft" data-restore-version="${x.id}">بازگردانی</button></div>`).join(''):emptyBlock('inbox','هنوز نسخه قبلی ثبت نشده است.');
 }
 function snapshotVersion(label){
   const snap=JSON.parse(JSON.stringify({tasks:S.tasks||[],settings:{...S.settings,versions:[]},done:S.done||{},reviews:S.reviews||[],sessions:S.sessions||[],tests:S.tests||[],theme:S.theme||'dark'}));
@@ -987,7 +1038,7 @@ async function restoreVersion(id){
   const v=S.settings.versions.find(x=>x.id===id);if(!v)return;
   if(!await askConfirm({title:'بازگردانی نسخه',text:'نسخه انتخاب‌شده بازگردانی شود؟ نسخه فعلی هم پیش از بازگردانی ذخیره می‌شود.',ok:'بازگردان'}))return;
   snapshotVersion('قبل از بازگردانی نسخه');const keep=S.settings.versions,s=v.snapshot;
-  S.tasks=s.tasks||[];S.done=s.done||{};S.reviews=s.reviews||[];S.sessions=s.sessions||[];S.tests=s.tests||[];S.settings={...S.settings,...s.settings,versions:keep};
+  S.tasks=s.tasks||[];S.done=s.done||{};S.reviews=s.reviews||[];S.sessions=s.sessions||[];S.tests=s.tests||[];const fx={animations:S.settings.animations,blur:S.settings.blur};S.settings={...S.settings,...s.settings,versions:keep,...fx};
   applyTheme();save();render();toast('نسخه قبلی بازگردانی شد ✓');
 }
 function saveSettings(){
@@ -1045,7 +1096,7 @@ async function importDayPlan(file){
     const o=JSON.parse(await file.text());
     if(o.schema!=='rah-honar-day-plan-v1'||o.date!==today()||!Array.isArray(o.tasks))throw Error('فایل باید برای امروز و با schema rah-honar-day-plan-v1 باشد.');
     for(const [i,t] of o.tasks.entries()){if(!/^\d{2}:\d{2}$/.test(t.start)||!/^\d{2}:\d{2}$/.test(t.end)||t.end<=t.start||!t.title)throw Error('اطلاعات فعالیت '+(i+1)+' نامعتبر است.')}
-    const sorted=o.tasks.slice().sort((a,b)=>a.start.localeCompare(b.start));
+    const sorted=o.tasks.slice().sort((a,b)=>cmp(a.start,b.start));
     for(let i=1;i<sorted.length;i++)if(sorted[i].start<sorted[i-1].end)throw Error('فعالیت‌ها با یکدیگر هم‌پوشانی دارند.');
     const workText=$('#aiInput').value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
     const busy=[...workText.matchAll(/(?:از\s*)?ساعت\s*(\d{1,2})(?::(\d{2}))?\s*(?:تا|الی|-)\s*(\d{1,2})(?::(\d{2}))?/g)].map(m=>({a:+m[1]*60+ +(m[2]||0),b:+m[3]*60+ +(m[4]||0)}))
@@ -1161,7 +1212,7 @@ function exportBackup(){
 async function applyBackup(text){
   try{const o=JSON.parse(text);if(!o||!o.settings||!o.done)throw Error();
     if(!await askConfirm({title:'بازیابی اطلاعات',text:'اطلاعات فعلی با پشتیبان جایگزین شود؟',ok:'بازیابی'}))return;
-    S=normalize(o);applyTheme();save();buildPlan(false);render();toast('بازیابی انجام شد ✓')}
+    S=normalize(o);applyTheme();save(true);buildPlan(false);render();toast('بازیابی انجام شد ✓')}
   catch(e){toast('فایل یا متن پشتیبان معتبر نیست.')}
 }
 function pasteBackup(){modal('بازیابی از متن',`<p class="sub">متن پشتیبان را اینجا جای‌گذاری کن.</p><textarea id="bkText" dir="ltr" style="min-height:200px;text-align:left" placeholder='{"version":2,...}'></textarea><button class="btn block" id="bkApply" style="margin-top:12px">بررسی و بازیابی</button>`);$('#bkApply').onclick=()=>{const v=$('#bkText').value;closeModal();applyBackup(v)}}
@@ -1169,16 +1220,19 @@ function pasteBackup(){modal('بازیابی از متن',`<p class="sub">متن
 /* ── Native (Android WebView) bridge — names are called by Flutter ── */
 function requestNativeNotifications(){if(window.NativeApp?.postMessage){S.settings.notificationsPermissionRequested=true;save();NativeApp.postMessage(JSON.stringify({type:'requestNotifications'}))}else toast('این گزینه فقط در نسخه اندروید فعال است.')}
 function refreshNotificationStatus(){if(window.NativeApp?.postMessage)NativeApp.postMessage(JSON.stringify({type:'checkNotificationPermission',requested:!!S?.settings?.notificationsPermissionRequested}));else{const e=$('#notificationPermissionStatus');if(e)e.textContent='وضعیت مجوز فقط در نسخه اندروید قابل بررسی است.'}}
+let _syncT=0,_lastSync='';
+function scheduleNativeSync(){if(!window.NativeApp?.postMessage)return;clearTimeout(_syncT);_syncT=setTimeout(()=>{try{syncNativeNotifications()}catch(e){}},1500)}
 function syncNativeNotifications(){
-  if(!window.NativeApp?.postMessage||!S)return;const choice=getSchoolChoice(),hasAI=S.tasks.some(t=>t.date===today()&&t.scheduleType==='aiDay');
-  const tasks=allTasks().filter(t=>!t.done&&(t.date!==today()||(hasAI?(t.scheduleType==='aiDay'||t.done):(t.scheduleType==='offday'?choice==='no':(!t.generated||choice==='yes'))))).map(t=>({id:String(t.id),date:t.date,start:t.start,end:t.end,title:t.title,topic:t.topic||'',kind:t.kind||''}));
-  NativeApp.postMessage(JSON.stringify({type:'scheduleTasks',tasks,settings:{notifyMode:S.settings.notifyMode||'both',quietStart:S.settings.quietStart||'23:00',quietEnd:S.settings.quietEnd||'07:00'}}));
+  if(!window.NativeApp?.postMessage||!S)return;const choice=getSchoolChoice(),hasAI=S.tasks.some(t=>t.date===today()&&t.scheduleType==='aiDay'),td=today();
+  const tasks=allTasks().filter(t=>!t.done&&t.date>=td&&(t.date!==today()||(hasAI?(t.scheduleType==='aiDay'||t.done):(t.scheduleType==='offday'?choice==='no':(!t.generated||choice==='yes'))))).map(t=>({id:String(t.id),date:t.date,start:t.start,end:t.end,title:t.title,topic:t.topic||'',kind:t.kind||''}));
+  const msg=JSON.stringify({type:'scheduleTasks',tasks,settings:{notifyMode:S.settings.notifyMode||'both',quietStart:S.settings.quietStart||'23:00',quietEnd:S.settings.quietEnd||'07:00'}});
+  if(msg===_lastSync)return;_lastSync=msg;NativeApp.postMessage(msg);
 }
-window.addEventListener('nativeNotificationPermission',e=>{const g=!!e.detail?.granted;S.settings.notificationsPermissionRequested=true;nativeStatus=g?'granted':'denied';save();
+window.addEventListener('nativeNotificationPermission',e=>{const g=!!e.detail?.granted;_lastSync='';S.settings.notificationsPermissionRequested=true;nativeStatus=g?'granted':'denied';save();
   const el=$('#notificationPermissionStatus');el.textContent=g?'دسترسی اعلان فعال است.':'دسترسی اعلان رد شده یا غیرفعال است. از تنظیمات اندروید می‌توانی آن را فعال کنی.';$('#requestNativeNotifications').classList.toggle('hidden',g);render()});
 window.addEventListener('nativeNotificationStatus',e=>{const s=e.detail?.status||'unknown';nativeStatus=s;
   const L={granted:'دسترسی اعلان فعال است.',denied:'دسترسی اعلان رد شده است. از دکمه درخواست یا تنظیمات اندروید استفاده کن.',notRequested:'هنوز درخواست دسترسی ارسال نشده است.',unsupported:'بررسی وضعیت در این دستگاه پشتیبانی نمی‌شود.'};
-  $('#notificationPermissionStatus').textContent=L[s]||'وضعیت دسترسی مشخص نیست.';$('#requestNativeNotifications').classList.toggle('hidden',s==='granted');renderHome()});
+  $('#notificationPermissionStatus').textContent=L[s]||'وضعیت دسترسی مشخص نیست.';$('#requestNativeNotifications').classList.toggle('hidden',s==='granted');if(currentPage==='home')renderHome()});
 
 /* ── Events ── */
 let _wt;
@@ -1199,7 +1253,8 @@ function bind(){
     if(x=c('[data-selfcheck]'))return openSelfCheck(x.dataset.selfcheck);
     if(x=c('[data-sc]'))return rateChapter(x.dataset.sc,x.dataset.lv);
     if(x=c('[data-sc-test]'))return chapterTest(x.dataset.scTest);
-    if(x=c('[data-acc-toggle]')){const acc=x.closest('.acc'),open=!acc.classList.contains('open');acc.classList.toggle('open',open);x.setAttribute('aria-expanded',open);
+    if(x=c('[data-acc-toggle]')){const acc=x.closest('.acc'),open=!acc.classList.contains('open');
+      const lz=acc.querySelector('.acc-in[data-lazy]');if(open&&lz){const f=LAZY[lz.dataset.lazy];if(f)lz.innerHTML=f();lz.removeAttribute('data-lazy')}acc.classList.toggle('open',open);x.setAttribute('aria-expanded',open);
       const id=x.dataset.accToggle;if(x.dataset.kind==='book')open?openBooks.add(id):openBooks.delete(id);else open?openWeeks.add(+id):openWeeks.delete(+id);return}
     if(x=c('[data-day]')){selDay=x.dataset.day;renderWeek();return}
     if(x=c('[data-rev-tab]')){revTab=x.dataset.revTab;renderReviews();return}
@@ -1208,10 +1263,11 @@ function bind(){
     if(x=c('[data-move]'))return moveTask(x.dataset.move,+x.dataset.to);
     if(x=c('[data-chip]')){const b=books.find(b=>b.id===x.dataset.book),i=+x.dataset.chip,ch=b.chapters[i],nx=b.chapters[i+1]?.[1]||b.pages;$('#testPageStart').value=ch[1];$('#testPageEnd').value=Math.max(ch[1],nx-1);return}
     if(x=c('[data-restore-version]'))return restoreVersion(x.dataset.restoreVersion);
+    if(x=c('[data-fx]'))return setFx(x.dataset.fx);
     if(x=c('[data-go]'))return go(x.dataset.go);
     if(x=c('[data-act]')){const a=x.dataset.act;if(a==='missed')showMissed();if(a==='notif')requestNativeNotifications();return}
     if(x=c('.sw')){S.settings.accent=x.dataset.accent;applyTheme();save();return}
-    if(x=c('.btn')){const r=x.getBoundingClientRect(),s=Math.max(r.width,r.height),el=document.createElement('span');el.className='ripple';
+    if((x=c('.btn'))&&animOn()){const r=x.getBoundingClientRect(),s=Math.max(r.width,r.height),el=document.createElement('span');el.className='ripple';
       el.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px`;x.appendChild(el);setTimeout(()=>el.remove(),600)}
   });
   $('#weekPrev').onclick=()=>{weekAnchor=addDays(weekStartOf(weekAnchor),-7);selDay=weekAnchor;renderWeek()};
@@ -1230,7 +1286,7 @@ function bind(){
   [['#startDate','#startHint'],['#targetDate','#targetHint'],['#examDate','#examHint']].forEach(([i,h])=>$(i).addEventListener('input',()=>dateHint(i,h)));
   $('#exportBtn').onclick=exportBackup;$('#copyBackupBtn').onclick=()=>copyText(backupText(),'متن پشتیبان');$('#pasteBackupBtn').onclick=pasteBackup;
   $('#importFile').onchange=async e=>{const f=e.target.files[0];if(f)applyBackup(await f.text());e.target.value=''};
-  $('#resetBtn').onclick=async()=>{if(!await askConfirm({title:'بازنشانی اطلاعات',text:'تمام پیشرفت‌ها و تنظیمات پاک شوند؟ ابتدا پشتیبان بگیر.',ok:'پاک‌سازی',danger:true}))return;S=fresh();applyTheme();buildPlan(true);render();toast('اطلاعات بازنشانی شد')};
+  $('#resetBtn').onclick=async()=>{if(!await askConfirm({title:'بازنشانی اطلاعات',text:'تمام پیشرفت‌ها و تنظیمات پاک شوند؟ ابتدا پشتیبان بگیر.',ok:'پاک‌سازی',danger:true}))return;S=fresh();applyTheme();buildPlan(true);save(true);render();toast('اطلاعات بازنشانی شد')};
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(anyOverlay()){hideAll();popOv()}}});
   let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#installBtn').classList.add('show')});
   $('#installBtn').onclick=async()=>{if(dp){dp.prompt();dp=null;$('#installBtn').classList.remove('show')}};
@@ -1243,7 +1299,9 @@ async function init(){
   buildSwatches();bind();applyTheme();buildPlan(false);
   const p=(location.hash||'').slice(1);try{history.replaceState({page:PAGES.includes(p)?p:'home'},'','#'+(PAGES.includes(p)?p:'home'))}catch(e){}
   showPage(PAGES.includes(p)?p:'home');
-  setInterval(()=>{if(!document.hidden&&!anyOverlay()){getSchoolChoice();renderHome()}},30000);
+  let _hk=null;const homeKey=()=>{const n=new Date(),h=n.getHours();return today()+'|'+(h<5?0:h<12?1:h<17?2:h<20?3:4)+'|'+(h>=14)};
+  _hk=homeKey();
+  setInterval(()=>{if(document.hidden||anyOverlay())return;const k=homeKey();if(k===_hk)return;_hk=k;getSchoolChoice();if(currentPage==='home')renderHome()},30000);
   setTimeout(()=>{try{syncNativeNotifications();refreshNotificationStatus()}catch(e){}},1200);
 }
 init();
